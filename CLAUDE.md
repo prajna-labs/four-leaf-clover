@@ -37,6 +37,8 @@ four-leaf-clover/
 - **Phase 1에서는 과도한 추상화 금지**. 빠르게 만들고 빠르게 검증. 가설을 검증하기 전에 인터페이스부터 일반화하지 않는다.
 - **상태 관리**: Phase 1~2는 Phaser 내장 상태로 충분. Capacitor Preferences / SQLite는 Phase 3부터 고려.
 - **테스트**: `FieldGenerator` 같은 순수 로직만 단위 테스트. UI/연출은 수동 검증.
+- **패키지 매니저**: `client/`는 **pnpm**을 쓴다 (`packageManager` 필드로 고정). `npm install` 금지. 새 의존성 추가는 `pnpm add <pkg>`.
+  - Capacitor가 iOS 네이티브를 추가하는 Phase 4 시점에 CocoaPods가 심볼릭 `node_modules`를 못 따라가는 이슈가 생기면, `client/.npmrc`에 `node-linker=hoisted` 한 줄 추가로 해결.
 
 ---
 
