@@ -5,3 +5,23 @@
 .vscode/
 .idea/
 *.swp
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Capacitor native (Phase 4에서 추가 예정)
+client/ios/
+client/android/
