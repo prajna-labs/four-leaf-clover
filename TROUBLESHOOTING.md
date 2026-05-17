@@ -9,6 +9,37 @@
 
 ---
 
+## 2026-05-17 — Retina/HiDPI 디스플레이에서 저해상도 렌더링 (Phase 2로 deferred)
+
+**증상**: macOS Retina(devicePixelRatio=2)에서 클로버 테두리에 계단 현상, 텍스트("새 들판" 버튼)가 흐릿함.
+
+**원인**: Phaser 3는 기본적으로 canvas의 internal pixel buffer 크기를 CSS 크기와 동일하게 설정. DPR=2 디스플레이에선 1x로 렌더한 캔버스를 브라우저가 2x로 늘려 표시 → 흐림. Phaser 3.50에서 `resolution` config 옵션이 제거되어 자동 해결 불가.
+
+**시도 가능한 해법** (현재 미적용):
+- **(A) Custom DPR 패치**: game init 후 `canvas.width/height = cssSize * dpr` 수동 설정 + `scale.resize` 이벤트 훅. 동작하면 즉시 효과, 단 Phaser ScaleManager와 충돌 가능.
+- **(B) 좌표계를 physical pixel로 전환**: `width: innerWidth * dpr`, `zoom: 1/dpr`. 모든 상수(TAP_RADIUS, font 등)에 dpr 스케일 어프 필요. 큰 리팩터.
+- **(C) Phase 2에서 손그림 에셋 도입 시 고해상도 텍스처로 자연 해결**: 코드 변경 최소.
+
+**결정**: (C)를 1순위로 두고 Phase 2 진입 시 재검토. 결정 컨텍스트 → [DECISIONS.md](DECISIONS.md).
+
+**관련**: PROJECT.md Phase 2 ("감각 완성도")
+
+---
+
+## 2026-05-17 — Container hit area가 회전에 따라 다른 분면으로 어긋남
+
+**증상**: FieldScene 클로버 탭 시, 어떤 클로버는 1분면, 어떤 클로버는 3분면을 클릭해야 인식. 클로버 영역 밖을 클릭해야 인식되는 경우도.
+
+**원인**: Phaser Container의 hit detection은 `localPoint + displayOrigin`을 hit area shape와 대조함. Container origin이 기본 (0.5, 0.5)이고 `setSize(56, 56)`이면 displayOrigin = (28, 28). 따라서 `Circle(0, 0, 28)`은 사실 컨테이너 위치에서 (-28, -28) 오프셋된 곳에 그려진 원. **Container rotation이 적용되면 이 오프셋도 회전**해서, 클로버 회전값에 따라 hit area가 1/2/3/4분면 어디로든 어긋남.
+
+**해결**: Circle 중심을 size box 중심으로 이동 — `Circle(0, 0, R)` → `Circle(R, R, R)`. 회전/스케일과 무관하게 시각 중심에 정렬.
+
+**교훈**: Phaser Container에 custom hit area shape를 줄 때 shape 좌표는 *size box의 좌상단 기준*. 시각 중심에 맞추려면 `(width/2, height/2)`로 이동시킬 것. (Sprite는 origin 처리가 달라서 같은 함정 없음.)
+
+**관련 커밋**: `0d06864` (Phase 1 §6.4 — FieldScene)
+
+---
+
 ## 2026-05-16 — Phaser import가 node 테스트 환경에서 실패
 
 **증상**: `vitest run` 시 `ReferenceError: window is not defined` (Phaser의 `OS.js` 모듈 init 단계).

@@ -10,6 +10,22 @@
 
 ---
 
+## 2026-05-17 — Retina/HiDPI 렌더링 수정을 Phase 2로 연기
+
+**상황**: §6.4 FieldScene 수동 검증 중 Retina 디스플레이에서 클로버 테두리/텍스트 저해상도 발견. Phaser 3는 자동 HiDPI 지원이 약함(3.50에서 `resolution` 옵션 제거). 해결책 후보: (A) custom DPR 패치, (B) 좌표계 physical pixel 전환, (C) Phase 2에서 고해상도 손그림 에셋으로 자연 해결.
+
+**결정**: (C)를 1순위로 Phase 2 진입 시 재검토. 현 Phase 1에선 수정 안 함.
+
+**이유**: Phase 1 목적은 *"찾는 행위 자체가 재밌는가?"* 검증(PROJECT.md §5). 시각 폴리시는 코어 메커닉 검증 후 단계. (A)/(B)는 부작용 위험이 있고, Phase 2에서 손그림 에셋 교체 시 자연 해결될 가능성 있어 지금 비용 들일 이유 약함.
+
+**트레이드오프**: 데모나 친구들에게 보여줄 때 시각 인상이 깎임. Phase 1 검증 자체엔 영향 없다고 판단.
+
+**재검토 시점**: Phase 2 첫 작업(손그림 에셋 도입) 시점. 손그림 에셋도 여전히 블러리하면 그때 (A) 또는 (B) 도입.
+
+**관련**: [TROUBLESHOOTING.md](TROUBLESHOOTING.md) "Retina/HiDPI 디스플레이에서 저해상도 렌더링"
+
+---
+
 ## 2026-05-17 — TDD 엄밀성 일시 완화 (mutation 검증 생략)
 
 **상황**: §6.3 FieldGenerator 작성 중. 9개 테스트 중 마지막 3개(`count=0`, `count=1`, 같은 시드 재현성)가 RED→GREEN 전환 없이 추가 즉시 통과. 엄격한 TDD라면 (a) 순서를 바꿔 재현성 테스트를 시드 기반 RNG 도입 *전*에 쓰거나, (b) 통과 후 일시 mutation(예: `mulberry32(seed)` → `mulberry32(Date.now())`)으로 테스트가 실제로 RED 되는지 확인해야 함.
