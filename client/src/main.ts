@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { BootScene } from "./scenes/BootScene";
+import { FieldScene } from "./scenes/FieldScene";
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -11,7 +11,7 @@ const config: Phaser.Types.Core.GameConfig = {
     width: "100%",
     height: "100%",
   },
-  scene: [BootScene],
+  scene: [FieldScene],
 };
 
 new Phaser.Game(config);
