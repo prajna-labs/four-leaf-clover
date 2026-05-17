@@ -7,9 +7,19 @@ const CLOVER_COUNT = 60;
 const TAP_RADIUS = 28;
 const NEXT_FIELD_DELAY_MS = 600;
 
+const HUD_TEXT_STYLE: Phaser.Types.GameObjects.Text.TextStyle = {
+  fontFamily: "system-ui, -apple-system, sans-serif",
+  fontSize: "14px",
+  color: "#ffffff",
+  backgroundColor: "#00000080",
+  padding: { x: 10, y: 6 },
+};
+
 export class FieldScene extends Phaser.Scene {
   private clovers: Clover[] = [];
   private acceptingInput = false;
+  private foundCount = 0;
+  private counterText!: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: "FieldScene" });
@@ -19,18 +29,24 @@ export class FieldScene extends Phaser.Scene {
     this.spawnField();
 
     const btn = this.add
-      .text(20, 20, "새 들판", {
-        fontFamily: "system-ui, -apple-system, sans-serif",
-        fontSize: "14px",
-        color: "#ffffff",
-        backgroundColor: "#00000080",
-        padding: { x: 10, y: 6 },
-      })
+      .text(20, 20, "새 들판", HUD_TEXT_STYLE)
       .setInteractive({ useHandCursor: true })
       .setDepth(100);
     btn.on("pointerdown", () => this.spawnField());
 
-    this.scale.on("resize", () => this.spawnField());
+    this.counterText = this.add
+      .text(this.scale.width - 20, 20, this.counterLabel(), HUD_TEXT_STYLE)
+      .setOrigin(1, 0)
+      .setDepth(100);
+
+    this.scale.on("resize", () => {
+      this.spawnField();
+      this.counterText.setPosition(this.scale.width - 20, 20);
+    });
+  }
+
+  private counterLabel(): string {
+    return `발견: ${this.foundCount}`;
   }
 
   private spawnField(): void {
@@ -75,6 +91,15 @@ export class FieldScene extends Phaser.Scene {
 
   private onFound(clover: Clover): void {
     this.acceptingInput = false;
+    this.foundCount += 1;
+    this.counterText.setText(this.counterLabel());
+    this.tweens.add({
+      targets: this.counterText,
+      scale: 1.25,
+      duration: 130,
+      yoyo: true,
+      ease: "Back.Out",
+    });
 
     const baseScale = clover.scale;
     this.tweens.add({
