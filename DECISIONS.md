@@ -10,6 +10,26 @@
 
 ---
 
+## 2026-05-17 — Phaser 3 채택 (v4 대신)
+
+**상황**: `client/package.json`은 `phaser: ^3.87.0`을 쓰고 있음. Phaser 4가 최신이지만 다른 세션에서 셋업할 때 v3을 기본 선택했고, 그 이유가 기록돼 있지 않아 사후 정리.
+
+**결정**: Phase 1 동안 Phaser 3 유지. v4 마이그레이션은 보류.
+
+**이유**:
+- **생태계 성숙도**: v3은 누적된 플러그인·예제·튜토리얼·Stack Overflow 자료가 풍부. v4는 풀 리라이트(TypeScript-native, WebGPU 등)라 커뮤니티 자료가 아직 빈약. Claude에게 코드를 시킬 때도 v3 패턴이 더 안정적으로 산출됨.
+- **Capacitor + 모바일 WebView 호환성**: v3 + Capacitor는 검증된 조합. v4의 새 렌더 파이프라인이 iOS WebView에서 어떻게 동작하는지 실전 사례가 적음.
+- **빌드 셋업 안정성**: 이미 Vite 8 / Vitest 4 / Capacitor 6 / TS 5.6에 맞춰 동작 중. v4로 갈아끼면 빌드 셋업 재검증 비용 발생.
+- **Phase 1 목적과 정합**: PROJECT.md §5에 따르면 지금 단계는 *"찾는 행위가 재밌는가?"* 검증. 최신 렌더링 기술 실험이 아님 — 신기술 리스크 < 빠른 검증 가치.
+
+**트레이드오프**: v4의 향상된 HiDPI/DPR 처리, WebGPU 기반 성능, TypeScript 네이티브 API를 못 씀. 미래에 v4로 마이그레이션하면 API 차이로 인한 재작성 비용 발생.
+
+**재검토 시점**: Phase 2 손그림 에셋 도입 시점 — Retina/HiDPI 이슈(아래 항목)를 v4 마이그레이션으로 함께 해결하는 게 합리적인지 그때 평가.
+
+**관련**: 아래 "Retina/HiDPI 렌더링 수정을 Phase 2로 연기" 항목
+
+---
+
 ## 2026-05-17 — Retina/HiDPI 렌더링 수정을 Phase 2로 연기
 
 **상황**: §6.4 FieldScene 수동 검증 중 Retina 디스플레이에서 클로버 테두리/텍스트 저해상도 발견. Phaser 3는 자동 HiDPI 지원이 약함(3.50에서 `resolution` 옵션 제거). 해결책 후보: (A) custom DPR 패치, (B) 좌표계 physical pixel 전환, (C) Phase 2에서 고해상도 손그림 에셋으로 자연 해결.
