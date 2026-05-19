@@ -77,6 +77,22 @@ four-leaf-clover/
 
 ---
 
+## 개발 로드맵 (ROADMAP.md)
+
+Phase별 상세 작업·완료 상태·예정 항목을 [ROADMAP.md](ROADMAP.md)에 모은다. PROJECT.md는 *큰 그림(컨셉/디자인 결정/타겟/기술 스택)*만 유지하고, *언제 무엇을 할지*는 ROADMAP.md.
+
+**기록 대상**:
+- Phase별 산출물, 작업 단위, 완료 상태(커밋 해시)
+- BACKLOG 항목이 graduate한 위치 (Phase N의 어떤 작업)
+
+**기록 안 함**: 게임 디자인 원칙, 기술 스택 선택 이유 — 그건 PROJECT.md.
+
+**상태 라벨**: ✅ 완료 (커밋 해시) / ⏳ 진행 중 / 📋 예정
+
+**참조 시점**: 새 작업 시작 전(다음 단계 확인), Phase 진입 시(산출물·작업 단위 점검).
+
+---
+
 ## 백로그 (BACKLOG.md)
 
 외부 피드백(테스터/유저)과 본인 아이디어 중 *지금 결정 안 하는 모든 것*을 [BACKLOG.md](BACKLOG.md)에 모은다. **decision pending** 상태의 input 저장소.
@@ -126,6 +142,7 @@ four-leaf-clover/
 
 ## 자주 참조할 위치
 
+- 개발 로드맵 (Phase·작업): [ROADMAP.md](ROADMAP.md)
 - 과거 문제·해결 이력: [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
 - 갈림길에서의 선택 이력: [DECISIONS.md](DECISIONS.md)
 - 미결 피드백·아이디어: [BACKLOG.md](BACKLOG.md)
