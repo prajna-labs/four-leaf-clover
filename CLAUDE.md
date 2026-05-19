@@ -77,6 +77,31 @@ four-leaf-clover/
 
 ---
 
+## 백로그 (BACKLOG.md)
+
+외부 피드백(테스터/유저)과 본인 아이디어 중 *지금 결정 안 하는 모든 것*을 [BACKLOG.md](BACKLOG.md)에 모은다. **decision pending** 상태의 input 저장소.
+
+**기록 대상**:
+- 플레이테스트/유저 리뷰/DM 등 외부 피드백
+- 본인이 떠올린 추가/변경 아이디어 (지금 당장 안 할 것)
+- 향후 검토 가치가 있다고 판단된 모든 한쪽 떨어뜨려둘 항목
+
+**기록 안 함**: 즉시 처리하는 것(그냥 처리), 이미 PROJECT.md에 명시된 스펙.
+
+**다른 문서와의 구분**:
+- TROUBLESHOOTING = *해결한 기술 문제*
+- DECISIONS = *내가 내린 갈림길 결정*
+- **BACKLOG = 아직 결정 안 한 것들의 집합** (외부 + 내부)
+
+**Triage 흐름**: 항목 추가 시 🆕. 검토 후 상태 변경:
+- ✅ **반영** — graduate한 곳 링크 (커밋/DECISIONS 항목)
+- ⏸ **보류** — 의미는 있지만 지금 시점 아님 (Phase X 이후 등)
+- ❌ **반려** — 채택 안 함 + 이유
+
+**형식**: 세션 헤더로 묶음(같은 플레이테스트 라운드, 같은 날의 본인 메모 등). 각 항목 `- {상태} [요약] — 출처. 본문. (선택) 메모`. 시간 역순. 자세한 형식은 BACKLOG.md 상단 안내 참조.
+
+---
+
 ## Git 사용 규칙
 
 - **저장소 범위**: 루트(`four-leaf-clover/`) 전체가 하나의 git 저장소. 코드(`client/`)와 마케팅·리서치 자료를 한 저장소에서 함께 추적한다.
@@ -103,6 +128,7 @@ four-leaf-clover/
 
 - 과거 문제·해결 이력: [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
 - 갈림길에서의 선택 이력: [DECISIONS.md](DECISIONS.md)
+- 미결 피드백·아이디어: [BACKLOG.md](BACKLOG.md)
 - 게임 컨셉·비전·타겟: PROJECT.md §1
 - 코어 메커닉·결정 사항: PROJECT.md §2
 - 아트 방향·씬·컬렉션: PROJECT.md §3
