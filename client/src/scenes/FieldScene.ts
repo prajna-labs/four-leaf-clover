@@ -3,8 +3,18 @@ import { Clover } from "../entities/Clover";
 import { generateField } from "../systems/FieldGenerator";
 
 const FIELD_MARGIN = 60;
-const CLOVER_COUNT = 60;
 const TAP_RADIUS = 28;
+
+const BASE_AREA = 375 * 812;
+const BASE_COUNT = 60;
+const DENSITY_MIN = 40;
+const DENSITY_MAX = 120;
+
+export function computeCloverCount(width: number, height: number): number {
+  const area = width * height;
+  const raw = Math.floor((area / BASE_AREA) * BASE_COUNT);
+  return Math.max(DENSITY_MIN, Math.min(DENSITY_MAX, raw));
+}
 const NEXT_FIELD_DELAY_MS = 600;
 
 const HUD_TEXT_STYLE: Phaser.Types.GameObjects.Text.TextStyle = {
@@ -78,10 +88,11 @@ export class FieldScene extends Phaser.Scene {
     });
 
     const { width, height } = this.scale;
+    const count = computeCloverCount(width, height);
     const field = generateField({
       width: width - FIELD_MARGIN * 2,
       height: height - FIELD_MARGIN * 2,
-      count: CLOVER_COUNT,
+      count,
       seed: Math.floor(Math.random() * 1e9),
     });
 
