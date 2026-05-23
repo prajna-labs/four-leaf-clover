@@ -20,14 +20,15 @@ export class FieldScene extends Phaser.Scene {
   private acceptingInput = false;
   private foundCount = 0;
   private counterText!: Phaser.GameObjects.Text;
+  private timerText!: Phaser.GameObjects.Text;
+  private fieldStartTime = 0;
+  private timerEvent: Phaser.Time.TimerEvent | null = null;
 
   constructor() {
     super({ key: "FieldScene" });
   }
 
   create(): void {
-    this.spawnField();
-
     const btn = this.add
       .text(20, 20, "새 들판", HUD_TEXT_STYLE)
       .setInteractive({ useHandCursor: true })
@@ -39,9 +40,17 @@ export class FieldScene extends Phaser.Scene {
       .setOrigin(1, 0)
       .setDepth(100);
 
+    this.timerText = this.add
+      .text(this.scale.width / 2, 20, "0.0초", HUD_TEXT_STYLE)
+      .setOrigin(0.5, 0)
+      .setDepth(100);
+
+    this.spawnField();
+
     this.scale.on("resize", () => {
       this.spawnField();
       this.counterText.setPosition(this.scale.width - 20, 20);
+      this.timerText.setX(this.scale.width / 2);
     });
   }
 
@@ -52,6 +61,21 @@ export class FieldScene extends Phaser.Scene {
   private spawnField(): void {
     for (const c of this.clovers) c.destroy();
     this.clovers = [];
+
+    if (this.timerEvent) {
+      this.timerEvent.remove();
+      this.timerEvent = null;
+    }
+    this.fieldStartTime = this.time.now;
+    this.timerText.setText("0.0초");
+    this.timerEvent = this.time.addEvent({
+      delay: 100,
+      loop: true,
+      callback: () => {
+        const elapsed = (this.time.now - this.fieldStartTime) / 1000;
+        this.timerText.setText(elapsed.toFixed(1) + "초");
+      },
+    });
 
     const { width, height } = this.scale;
     const field = generateField({
@@ -93,6 +117,13 @@ export class FieldScene extends Phaser.Scene {
     this.acceptingInput = false;
     this.foundCount += 1;
     this.counterText.setText(this.counterLabel());
+
+    const elapsed = (this.time.now - this.fieldStartTime) / 1000;
+    if (this.timerEvent) {
+      this.timerEvent.remove();
+      this.timerEvent = null;
+    }
+
     this.tweens.add({
       targets: this.counterText,
       scale: 1.25,
@@ -112,7 +143,7 @@ export class FieldScene extends Phaser.Scene {
 
     const { width, height } = this.scale;
     const toast = this.add
-      .text(width / 2, height / 2, "찾았다!", {
+      .text(width / 2, height / 2, `찾았다! (${elapsed.toFixed(1)}초)`, {
         fontFamily: "system-ui, -apple-system, sans-serif",
         fontSize: "44px",
         color: "#ffffff",
