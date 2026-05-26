@@ -28,8 +28,8 @@
 - ✅ §6.3 FieldGenerator (TDD) — `a6fc251`
 - ✅ §6.4 FieldScene (탭 입력 + 정/오답 피드백) — `0d06864`
 - ✅ §6.5 발견 카운터 (세션 누적) — `7968075`
-- 📋 §6.6 플레이 타이머 표시 *(from [BACKLOG](BACKLOG.md) 1차 #1)*
-- 📋 §6.7 뷰포트별 클로버 밀도 보정 — PC/모바일 균형 *(from [BACKLOG](BACKLOG.md) 1차 #2)*
+- ✅ §6.6 플레이 타이머 표시 — `e4f4a04` *(from [BACKLOG](BACKLOG.md) 1차 #1)*
+- ✅ §6.7 뷰포트별 클로버 밀도 보정 — PC/모바일 균형 — `90a1104` *(from [BACKLOG](BACKLOG.md) 1차 #2)*
 
 ### 검증 방법
 
