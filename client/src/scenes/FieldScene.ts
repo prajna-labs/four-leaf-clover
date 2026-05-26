@@ -37,6 +37,7 @@ export class FieldScene extends Phaser.Scene {
   private fieldStartTime = 0;
   private hintBtn!: Phaser.GameObjects.Text;
   private hintUsed = false;
+  private hintParticles: Phaser.GameObjects.Text[] = [];
 
   constructor() {
     super({ key: "FieldScene" });
@@ -80,6 +81,11 @@ export class FieldScene extends Phaser.Scene {
 
     this.fieldStartTime = this.time.now;
     this.hintUsed = false;
+    for (const p of this.hintParticles) {
+      this.tweens.killTweensOf(p);
+      p.destroy();
+    }
+    this.hintParticles = [];
     this.hintBtn.setAlpha(1).setInteractive({ useHandCursor: true });
 
     const { width, height } = this.scale;
@@ -173,11 +179,10 @@ export class FieldScene extends Phaser.Scene {
 
   private showHint(): void {
     if (this.hintUsed) return;
-    this.hintUsed = true;
-    this.hintBtn.setAlpha(0.35).disableInteractive();
-
     const fourLeaf = this.clovers.find((c) => c.isFourLeaf());
     if (!fourLeaf) return;
+    this.hintUsed = true;
+    this.hintBtn.setAlpha(0.35).disableInteractive();
 
     const chars = ["✦", "✧"];
     for (let i = 0; i < HINT_PARTICLE_COUNT; i++) {
@@ -199,6 +204,7 @@ export class FieldScene extends Phaser.Scene {
         .setOrigin(0.5)
         .setAlpha(0)
         .setDepth(150);
+      this.hintParticles.push(particle);
 
       this.tweens.add({
         targets: particle,
