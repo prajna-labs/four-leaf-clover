@@ -30,9 +30,7 @@ export class FieldScene extends Phaser.Scene {
   private acceptingInput = false;
   private foundCount = 0;
   private counterText!: Phaser.GameObjects.Text;
-  private timerText!: Phaser.GameObjects.Text;
   private fieldStartTime = 0;
-  private timerEvent: Phaser.Time.TimerEvent | null = null;
 
   constructor() {
     super({ key: "FieldScene" });
@@ -50,17 +48,11 @@ export class FieldScene extends Phaser.Scene {
       .setOrigin(1, 0)
       .setDepth(100);
 
-    this.timerText = this.add
-      .text(this.scale.width / 2, 20, "0.0초", HUD_TEXT_STYLE)
-      .setOrigin(0.5, 0)
-      .setDepth(100);
-
     this.spawnField();
 
     this.scale.on("resize", () => {
       this.spawnField();
       this.counterText.setPosition(this.scale.width - 20, 20);
-      this.timerText.setX(this.scale.width / 2);
     });
   }
 
@@ -72,20 +64,7 @@ export class FieldScene extends Phaser.Scene {
     for (const c of this.clovers) c.destroy();
     this.clovers = [];
 
-    if (this.timerEvent) {
-      this.timerEvent.remove();
-      this.timerEvent = null;
-    }
     this.fieldStartTime = this.time.now;
-    this.timerText.setText("0.0초");
-    this.timerEvent = this.time.addEvent({
-      delay: 100,
-      loop: true,
-      callback: () => {
-        const elapsed = (this.time.now - this.fieldStartTime) / 1000;
-        this.timerText.setText(elapsed.toFixed(1) + "초");
-      },
-    });
 
     const { width, height } = this.scale;
     const count = computeCloverCount(width, height);
@@ -130,10 +109,6 @@ export class FieldScene extends Phaser.Scene {
     this.counterText.setText(this.counterLabel());
 
     const elapsed = (this.time.now - this.fieldStartTime) / 1000;
-    if (this.timerEvent) {
-      this.timerEvent.remove();
-      this.timerEvent = null;
-    }
 
     this.tweens.add({
       targets: this.counterText,
