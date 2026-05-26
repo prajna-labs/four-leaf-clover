@@ -25,3 +25,6 @@ build/
 # Capacitor native (Phase 4에서 추가 예정)
 client/ios/
 client/android/
+
+# Superpowers brainstorm sessions
+.superpowers/
