@@ -15,6 +15,10 @@ export function computeCloverCount(width: number, height: number): number {
   const raw = Math.floor((area / BASE_AREA) * BASE_COUNT);
   return Math.max(DENSITY_MIN, Math.min(DENSITY_MAX, raw));
 }
+const HINT_PARTICLE_COUNT = 8;
+const HINT_PARTICLE_ALPHA = 0.35;
+const HINT_PARTICLE_RADIUS_MIN = 50;
+const HINT_PARTICLE_RADIUS_MAX = 70;
 const NEXT_FIELD_DELAY_MS = 600;
 
 const HUD_TEXT_STYLE: Phaser.Types.GameObjects.Text.TextStyle = {
@@ -31,6 +35,8 @@ export class FieldScene extends Phaser.Scene {
   private foundCount = 0;
   private counterText!: Phaser.GameObjects.Text;
   private fieldStartTime = 0;
+  private hintBtn!: Phaser.GameObjects.Text;
+  private hintUsed = false;
 
   constructor() {
     super({ key: "FieldScene" });
@@ -48,11 +54,19 @@ export class FieldScene extends Phaser.Scene {
       .setOrigin(1, 0)
       .setDepth(100);
 
+    this.hintBtn = this.add
+      .text(this.scale.width / 2, this.scale.height - 20, "힌트", HUD_TEXT_STYLE)
+      .setOrigin(0.5, 1)
+      .setInteractive({ useHandCursor: true })
+      .setDepth(100);
+    this.hintBtn.on("pointerdown", () => this.showHint());
+
     this.spawnField();
 
     this.scale.on("resize", () => {
       this.spawnField();
       this.counterText.setPosition(this.scale.width - 20, 20);
+      this.hintBtn.setPosition(this.scale.width / 2, this.scale.height - 20);
     });
   }
 
@@ -65,6 +79,8 @@ export class FieldScene extends Phaser.Scene {
     this.clovers = [];
 
     this.fieldStartTime = this.time.now;
+    this.hintUsed = false;
+    this.hintBtn.setAlpha(1).setInteractive({ useHandCursor: true });
 
     const { width, height } = this.scale;
     const count = computeCloverCount(width, height);
@@ -153,6 +169,56 @@ export class FieldScene extends Phaser.Scene {
       toast.destroy();
       this.spawnField();
     });
+  }
+
+  private showHint(): void {
+    if (this.hintUsed) return;
+    this.hintUsed = true;
+    this.hintBtn.setAlpha(0.35).disableInteractive();
+
+    const fourLeaf = this.clovers.find((c) => c.isFourLeaf());
+    if (!fourLeaf) return;
+
+    const chars = ["✦", "✧"];
+    for (let i = 0; i < HINT_PARTICLE_COUNT; i++) {
+      const angle =
+        (i / HINT_PARTICLE_COUNT) * Math.PI * 2 + (Math.random() - 0.5) * 0.8;
+      const radius =
+        HINT_PARTICLE_RADIUS_MIN +
+        Math.random() * (HINT_PARTICLE_RADIUS_MAX - HINT_PARTICLE_RADIUS_MIN);
+      const dx = Math.cos(angle) * radius;
+      const dy = Math.sin(angle) * radius;
+      const delay = Math.random() * 600;
+
+      const particle = this.add
+        .text(fourLeaf.x, fourLeaf.y, chars[i % 2], {
+          fontFamily: "system-ui, -apple-system, sans-serif",
+          fontSize: i % 2 === 0 ? "10px" : "9px",
+          color: "#ffe87a",
+        })
+        .setOrigin(0.5)
+        .setAlpha(0)
+        .setDepth(150);
+
+      this.tweens.add({
+        targets: particle,
+        x: fourLeaf.x + dx,
+        y: fourLeaf.y + dy,
+        alpha: HINT_PARTICLE_ALPHA,
+        duration: 1000,
+        delay,
+        ease: "Sine.Out",
+        onComplete: () => {
+          this.tweens.add({
+            targets: particle,
+            alpha: 0,
+            duration: 1000,
+            ease: "Sine.In",
+            onComplete: () => particle.destroy(),
+          });
+        },
+      });
+    }
   }
 
   private onMiss(clover: Clover): void {
