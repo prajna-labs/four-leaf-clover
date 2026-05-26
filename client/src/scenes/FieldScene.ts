@@ -129,12 +129,13 @@ export class FieldScene extends Phaser.Scene {
 
     const { width, height } = this.scale;
     const toast = this.add
-      .text(width / 2, height / 2, `찾았다! (${elapsed.toFixed(1)}초)`, {
+      .text(width / 2, height / 2, `찾았다!\n${elapsed.toFixed(1)}초`, {
         fontFamily: "system-ui, -apple-system, sans-serif",
         fontSize: "44px",
         color: "#ffffff",
         stroke: "#1a3d1f",
         strokeThickness: 5,
+        align: "center",
       })
       .setOrigin(0.5)
       .setAlpha(0)
